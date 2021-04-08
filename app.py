@@ -25,7 +25,7 @@ def datetime():
 
 
 @app.route("/who-is-admin")
-def datetime():
+def who_is_admin():
     return "<H1>" + usuario_admin.nombre + " is admin</H1>"
 
 if __name__ == "__main__":
