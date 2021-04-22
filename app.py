@@ -1,11 +1,11 @@
 from datetime import datetime as dt
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 from usuario import usuario
 from UsuarioController import UsuarioController
 
 mis_usuarios = UsuarioController()
-usuario_admin = usuario(0,"Ariel","abautista","1234",1)
+mis_usuarios.crear("Ariel","abautista","1234",1)
 
 app = Flask(__name__)
 CORS(app)
@@ -26,9 +26,35 @@ def datetime():
     return "<H1>" + str(now_utc) + "</H1>"
 
 
-@app.route("/who-is-admin")
-def who_is_admin():
-    return "<H1>" + usuario_admin.nombre + " is admin</H1>"
+@app.route("/inicio-sesion",methods=['POST'])
+def inicio_sesion():
+
+    if request.method == 'POST':
+
+        user_name = request.json['user_name']
+        user_pass = request.json['user_pass']
+
+        mi_usuario = mis_usuarios.login(user_name,user_pass)
+
+        if mi_usuario != None:
+
+            return {
+
+                'status' : 200,
+                'info' : mi_usuario
+
+            }
+
+        else: 
+            return {
+                'status' : 400,
+                'info' : 'Usuario no válido'
+            }
+
+    return{
+        'status' : 500,
+        'info' : 'Bad request'
+    } 
 
 
 @app.route("/usuario",methods=['GET','POST','PUT','DELETE'])
@@ -43,10 +69,12 @@ def usuario_crear():
         user_pass = request.form.get('user_pass')
         rol = request.form.get('rol')
 
-        if mis_usuarios.crear(nombre,user_name,user_pass,rol):
+        new_user = mis_usuarios.crear(nombre,user_name,user_pass,rol)
 
-            response['stauts'] = 200
-            response['info'] = 'Usuario creado correctamente'
+        if new_user != None:
+
+            response['status'] = 200
+            response['info'] = 'Usuario creado correctamente\nID: ' + new_user
 
         else:
 

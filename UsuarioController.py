@@ -6,7 +6,21 @@ class UsuarioController:
     #CONSTRUCTOR
     def __init__(self):
         self.usuarios = []
-        self.contador_id = 0 
+        self.contador_id = 0
+
+
+    #MÉTODO PARA HACER LOGGIN
+    def login(self, user_name, user_pass):
+
+        for usr in self.usuarios:
+
+            if usr.autenticar(user_name,user_pass):
+
+                return usr.dump()
+        
+        return None
+
+        
 
 
     #MÉTODO PARA CREAR USUARIOS
@@ -16,7 +30,7 @@ class UsuarioController:
 
             if usr.user_name == user_name:
                 print(f'El nombre de usuario: "{user_name}" ya está en uso.')
-                return False
+                return None
         
         self.usuarios.append(
             usuario(self.contador_id,nombre,user_name,user_pass,rol)
@@ -25,7 +39,7 @@ class UsuarioController:
         print(f'Se creó al usuario: "{user_name}" con el id: "{self.contador_id}" de forma correcta.')
         self.contador_id += 1
 
-        return True
+        return self.contador_id-1
 
 
     #MÉTODO PARA DEVOLVER UN USUARIO MEDIANTE SU ID
