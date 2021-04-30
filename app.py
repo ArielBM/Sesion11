@@ -64,17 +64,17 @@ def usuario_crear():
     
     if request.method == 'POST':
 
-        nombre = request.form.get('nombre')
-        user_name = request.form.get('user_name')
-        user_pass = request.form.get('user_pass')
-        rol = request.form.get('rol')
+        nombre = request.json['nombre']
+        user_name = request.json['user_name']
+        user_pass = request.json['user_pass']
+        rol = 2
 
         new_user = mis_usuarios.crear(nombre,user_name,user_pass,rol)
 
         if new_user != None:
 
             response['status'] = 200
-            response['info'] = 'Usuario creado correctamente\nID: ' + new_user
+            response['info'] = 'Usuario creado correctamente\nID: ' + str(new_user)
 
         else:
 
@@ -101,6 +101,15 @@ def usuario_crear():
 
 
     return response
+
+
+@app.route("/obtener-usuarios",methods=['GET'])
+def obtener_usuarios():
+
+    return {
+        'status' : 200,
+        'info' : mis_usuarios.retornar_usuarios()
+    }
 
 if __name__ == "__main__":
     app.run(threaded=True, port=5001, debug=True)
